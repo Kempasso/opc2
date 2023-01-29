@@ -10,3 +10,4 @@ async def get_session() -> AsyncIterator[AsyncSession]:
 from .devices import router as DeviceRouter
 from .signals import router as SignalRouter
 from .codes import router as CodesRouter
+from .signal_logs import router as SignalLogsRouter

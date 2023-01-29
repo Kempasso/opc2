@@ -2,8 +2,6 @@ from dataclasses import dataclass
 
 from repositories import (
     SignalsRepo,
-    SignalsLogRepo,
-    signals_log_repo,
     signals_repo,
 )
 
@@ -37,17 +35,4 @@ class SignalsService:
         return signal
 
     async def get_all_signals(self):
-        return await self.repository.all()
-
-
-@dataclass
-class SignalsLogService:
-    repository: SignalsLogRepo = signals_log_repo
-
-    async def filter_log_entries_by_signal_id(self, id: int):
-        query = await self.repository.do_filter(as_query=True,
-                                                signal_id=id)
-        return query
-
-    async def get_all_log_entries(self):
         return await self.repository.all()

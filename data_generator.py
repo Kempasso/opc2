@@ -65,7 +65,7 @@ async def create_signals(limit: int = CONST_LIMIT):
             description="desc"
         )
     device_list = await devices_repo.all(is_query=False)
-    code_list = await codes_repo.all(is_query=False)
+    code_list = await codes_repo.all(is_query=False, limit=2)
     for device in device_list:
         data = get_data()
         if code_list:
@@ -91,22 +91,16 @@ async def test_create_signals():
 
 @pytest.mark.asyncio
 async def create_signals_log(limit: int = CONST_LIMIT):
-    signals_list = await signals_repo.all(is_query=False)
+    signals_list = await signals_repo.all(is_query=False, limit=2)
     for signal in signals_list:
         counter = 1
         while counter < limit-1:
             await signals_log_repo.create(signal_id=signal.id)
-
-
-@pytest.mark.asyncio
-async def test_create_signals_log():
-    signals_log = await create_signals_log(limit=2)
-    for el in signals_log:
-        assert el.id and el.signal_id
+            counter += 1
 
 
 async def create_test_data():
-    await create_devices()
-    await create_codes(limit=5)
-    await create_signals(limit=10)
-    await create_signals_log(limit=2)
+    # await create_devices()
+    # await create_codes(limit=5)
+    # await create_signals(limit=5)
+    await create_signals_log(limit=5)

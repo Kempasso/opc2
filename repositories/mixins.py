@@ -66,11 +66,13 @@ class RetrieveMixin(BaseMixin):
             result = await session.execute(query)
             return result.scalar()
 
-    async def all(self, is_query: bool = True):
+    async def all(self, is_query: bool = True, limit: int | None = None):
         query = select(self.table)
         if is_query:
             return query
         else:
+            if limit:
+                query = query.limit(limit)
             async with self.session_maker() as session:
                 result = await session.execute(query)
                 return result.scalars()

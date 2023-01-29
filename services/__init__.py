@@ -2,7 +2,8 @@ import logging
 
 import repositories
 from .devices import DeviceService
-from .signals import SignalsService, SignalsLogService
+from .signals import SignalsService
+from .signal_logs import SignalsLogService
 from .codes import CodesService
 
 # Repos

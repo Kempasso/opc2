@@ -20,7 +20,8 @@ session_maker = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession
 # Main app repo imports
 from .codes import CodesRepo
 from .devices import DevicesRepo
-from .signals import SignalsRepo, SignalsLogRepo
+from .signals import SignalsRepo
+from .signal_logs import SignalsLogRepo
 
 from tables import BaseModel
 
