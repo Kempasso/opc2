@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from fastapi_pagination import Page, Params
+from fastapi_pagination.bases import AbstractPage
 from fastapi_pagination.ext.async_sqlalchemy import paginate
 
 
@@ -21,10 +22,9 @@ async def get_device_by_id(id: int) -> rm.DeviceResponseModel:
 
 @router.get(path="", response_model=Page[rm.DeviceResponseModel])
 async def get_all_devices(session: AsyncSession = Depends(get_session),
-                          params: Params = Depends()) -> rm.DevicesResponseModel:
+                          params: Params = Depends()) -> AbstractPage[rm.DevicesResponseModel]:
     """
     Позволяет получить все устройства
     """
     devices_query = await device_service.get_all_devices()
     return await paginate(conn=session, query=devices_query, params=params)
-    # return rm.DevicesResponseModel(**vars(devices))
