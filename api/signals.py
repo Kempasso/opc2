@@ -44,10 +44,10 @@ async def get_all_signals(session: AsyncSession = Depends(get_session),
     return await paginate(conn=session, query=query, params=params)
 
 
-@router.get(path="/log", response_model=Page[rm.SignalResponseModel])
+@router.get(path="/log", response_model=Page[rm.SignalsLogResponseModel])
 async def get_all_log_entries(session: AsyncSession = Depends(get_session),
                           params: Params = Depends()
-                          ) -> rm.SignalsResponseModel:
+                          ) -> rm.SignalsLogsResponseModel:
     """
     Позволяет получить все устройства
     """

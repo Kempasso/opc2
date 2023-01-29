@@ -55,6 +55,26 @@ class SignalsResponseModel(BaseModel):
         orm_mode = True
 
 
+class SignalsLogResponseModel(BaseModel):
+    id: int
+    signal_id: int
+
+    created_at: datetime
+    updated_at: datetime | None
+
+    class Config:
+        arbitrary_types_allowed = True
+        orm_mode = True
+
+
+class SignalsLogsResponseModel(BaseModel):
+    __root__ = typing.List[SignalsLogResponseModel]
+
+    class Config:
+        arbitrary_types_allowed = True
+        orm_mode = True
+
+
 class CodeResponseModel(BaseModel):
     id: int
     title: str
