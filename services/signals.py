@@ -1,15 +1,32 @@
+from datetime import datetime
+from typing import Any
 from dataclasses import dataclass
 
 from repositories import (
     SignalsRepo,
     signals_repo,
 )
+from .signal_logs import SignalsLogService
 
 
 class SignalsParser:
     @classmethod
-    async def parse_row(cls, data: str):
+    async def parse_data(cls, data: Any):
         raise NotImplemented
+        # elements = data.data.split(',')
+        # for el in elements:
+        #     signal = await SignalsService.repository.get(row=el)
+        #     if not signal.active:
+        #         await SignalsService.repository.update(
+        #             filter_by_values=dict(id=signal.id),
+        #             new_values=dict(updated_at=datetime.now(), active=True)
+        #         )
+        #         await SignalsLogService.repository.create(signal_id=signal.id)
+        #     else:
+        #         await SignalsService.repository.update(
+        #             filter_by_values=dict(id=signal.id),
+        #             new_values=dict(updated_at=datetime.now())
+        #         )
 
 
 @dataclass
@@ -21,7 +38,7 @@ class SignalsService:
         Парсит сигнал, приходящий с устройства
         """
         # TODO: Здесь необходимо описать парсер с последующим укладыванием в базу
-        await SignalsParser.parse_row(**kwargs)
+        await SignalsParser.parse_data(**kwargs)
 
     async def get_active_signals_by_device_id(self, id: int):
         """
