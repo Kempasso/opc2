@@ -10,6 +10,7 @@ from pydantic import BaseModel
 class DeviceResponseModel(BaseModel):
     id: int
     title: str
+    temperature: float | None
     serial: str
     description: str
     responsible: str
