@@ -10,7 +10,6 @@ CONST_LIMIT = 6
 
 async def create_devices(limit: int = CONST_LIMIT):
     counter = 1
-    devices_list: list = []
     while counter < limit - 1:
         data = dict(
             title=f"Платформа №{counter}",
@@ -21,10 +20,8 @@ async def create_devices(limit: int = CONST_LIMIT):
             vendor='Филиал УСЗ "Газпром"',
             responsible='Иван Иванов'
         )
-        device = await devices_repo.create(**data)
-        devices_list.append(device)
+        await devices_repo.create(**data)
         counter += 1
-    return devices_list
 
 
 @pytest.mark.asyncio
@@ -34,8 +31,8 @@ async def test_create_devices():
         assert el.id
 
 
-async def create_codes(device_list: list, limit: int = CONST_LIMIT) -> list:
-    codes_list: list = []
+async def create_codes(limit: int = CONST_LIMIT):
+    device_list = await devices_repo.all(is_query=False)
     for device in device_list:
         counter = 1
         while counter < limit - 1:
@@ -46,81 +43,70 @@ async def create_codes(device_list: list, limit: int = CONST_LIMIT) -> list:
                 solution=f"Решение кода №{counter}",
                 device_id=device.id
             )
-            code = await codes_repo.create(**data)
-            codes_list.append(code)
+            await codes_repo.create(**data)
             counter += 1
-    return codes_list
 
 
 @pytest.mark.asyncio
 async def test_create_codes():
-    device_list = await create_devices()
-    code_list = await create_codes(device_list)
+    code_list = await create_codes()
     for el in code_list:
         assert el.id and el.device_id
 
 
-async def create_signals(device_list: list, code_list: list | None = None, limit: int = CONST_LIMIT):
-    signals_list: list = []
-
+async def create_signals(limit: int = CONST_LIMIT):
     def get_data():
         return dict(
             device_id=device.id,
             duration=random.randint(1, 15),
-            active=bool(random.randint(0, 1)),
+            active=True,
             # code_id=code.id,
             row="".join(random.choice(string.ascii_letters + string.digits) for i in range(10)),
             description="desc"
         )
-
+    device_list = await devices_repo.all(is_query=False)
+    code_list = await codes_repo.all(is_query=False)
     for device in device_list:
-        counter = 1
         data = get_data()
         if code_list:
             for code in code_list:
                 data["code_id"] = code.id
-                signal = signals_repo.create(**data)
-                signals_list.append(signal)
+                signal = await signals_repo.create(**data)
+                await codes_repo.update(
+                    filter_by_values=dict(id=code.id),
+                    new_values=dict(signal_id=signal.id)
+                )
         else:
+            counter = 1
             while counter < limit - 1:
-                data = get_data()
-                signal = signals_repo.create(**data)
-                signals_list.append(signal)
-
-        return signals_list
+                await signals_repo.create(**get_data())
 
 
 @pytest.mark.asyncio
 async def test_create_signals():
-    device_list = await create_devices()
-    signals_list = await create_signals(device_list, limit=1)
+    signals_list = await create_signals(limit=1)
     for el in signals_list:
         assert el.id and el.device_id
 
 
 @pytest.mark.asyncio
-async def create_signals_log(signals_list: list, limit: int = CONST_LIMIT):
-    signals_log_list: list = []
+async def create_signals_log(limit: int = CONST_LIMIT):
+    signals_list = await signals_repo.all(is_query=False)
     for signal in signals_list:
         counter = 1
         while counter < limit-1:
-            signal_log = await signals_log_repo.create(signal_id=signal.id)
-            signals_list.append(signal_log)
-
-    return signals_log_list
+            await signals_log_repo.create(signal_id=signal.id)
 
 
 @pytest.mark.asyncio
 async def test_create_signals_log():
-    device_list = await create_devices()
-    signals_list = await create_signals(device_list, limit=2)
-    signals_log = await create_signals_log(signals_list, limit=2)
+    signals_log = await create_signals_log(limit=2)
     for el in signals_log:
         assert el.id and el.signal_id
 
 
 async def create_test_data():
-    device_list = await create_devices()
-    codes_list = await create_codes(device_list, limit=5)
-    signals_list = await create_signals(codes_list, limit=5)
-    signals_log_list = await create_signals_log(signals_list, limit=2)
+    await create_devices()
+    await create_codes(limit=5)
+    await create_signals(limit=10)
+    await create_signals_log(limit=2)

@@ -12,6 +12,9 @@ class DeviceResponseModel(BaseModel):
     title: str
     serial: str
     description: str
+    responsible: str
+    model: str
+    vendor: str
 
     created_at: datetime | None
     updated_at: datetime | None
@@ -32,8 +35,7 @@ class DevicesResponseModel(BaseModel):
 class SignalResponseModel(BaseModel):
     id: int
     device_id: int | None
-    # device: DevicesResponseModel
-    # duration: int
+    code_id: int | None
     active: bool
     description: str
 
@@ -61,10 +63,8 @@ class CodeResponseModel(BaseModel):
     solution: str
 
     device_id: int | None
-    # device: DevicesResponseModel
 
     signal_id: int | None
-    # signal: SignalsResponseModel
 
     created_at: datetime | None
     updated_at: datetime | None
