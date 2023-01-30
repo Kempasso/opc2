@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Unicode, Float
 from sqlalchemy.orm import relationship, relation
 
 from . import BaseModel
@@ -12,6 +12,8 @@ class Device(BaseModel):
     title = Column(Unicode(255), index=True)
     serial = Column(Unicode(255), index=True)
     description = Column(Unicode(4096))
+
+    temperature = Column(Float)
 
     codes = relation("Code", remote_side=[id], uselist=True)
 

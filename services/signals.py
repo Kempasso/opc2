@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from typing import Any
 from dataclasses import dataclass
@@ -6,27 +7,51 @@ from repositories import (
     SignalsRepo,
     signals_repo,
 )
-from .signal_logs import SignalsLogService
+from services import device_service, signals_log_service, signals_service
 
 
 class SignalsParser:
     @classmethod
     async def parse_data(cls, data: Any):
         raise NotImplemented
-        # elements = data.data.split(',')
-        # for el in elements:
-        #     signal = await SignalsService.repository.get(row=el)
-        #     if not signal.active:
-        #         await SignalsService.repository.update(
-        #             filter_by_values=dict(id=signal.id),
-        #             new_values=dict(updated_at=datetime.now(), active=True)
-        #         )
-        #         await SignalsLogService.repository.create(signal_id=signal.id)
-        #     else:
-        #         await SignalsService.repository.update(
-        #             filter_by_values=dict(id=signal.id),
-        #             new_values=dict(updated_at=datetime.now())
-        #         )
+
+        device = await device_service.get(serial=data.serial)
+
+        if "temper" in data:
+            signal = await signals_service.get(
+                row="temper"
+            )
+            await signals_service.update(
+                filter_by_values=dict(
+                    id=signal.id,
+                    device_id=device.id
+                ),
+                new_values=dict(updated_at=datetime.now(), active=True)
+            )
+            temper_value = int(re.search(r'\d+', data).group())
+            await device_service.update_device_temperature(device.id, temper_value)
+            await signals_log_service.create(signal_id=signal.id)
+        else:
+            elements = data.data.split(',')
+            for el in elements:
+                signal = await SignalsService.repository.get(row=el)
+                if not signal.active:
+                    await SignalsService.repository.update(
+                        filter_by_values=dict(
+                            id=signal.id,
+                            device_id=device.id
+                        ),
+                        new_values=dict(updated_at=datetime.now(), active=True)
+                    )
+                    await signals_log_service.create(signal_id=signal.id)
+                else:
+                    await SignalsService.repository.update(
+                        filter_by_values=dict(
+                            id=signal.id,
+                            device_id=device.id,
+                        ),
+                        new_values=dict(updated_at=datetime.now())
+                    )
 
 
 @dataclass
