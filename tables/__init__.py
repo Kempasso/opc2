@@ -5,5 +5,5 @@ BaseModel = declarative_base()
 # Main app models
 from .codes import Code, Levels
 from .devices import Device
-from .signals import Signal
+from .signals import Signal, Levels as SignalLevels
 from .signals_log import SignalsLog

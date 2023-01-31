@@ -7,63 +7,11 @@ from repositories import (
     SignalsRepo,
     signals_repo,
 )
-from services import device_service, signals_log_service, signals_service
-
-
-class SignalsParser:
-    @classmethod
-    async def parse_data(cls, data: Any):
-        raise NotImplemented
-
-        device = await device_service.get(serial=data.serial)
-
-        if "temper" in data:
-            signal = await signals_service.get(
-                row="temper"
-            )
-            await signals_service.update(
-                filter_by_values=dict(
-                    id=signal.id,
-                    device_id=device.id
-                ),
-                new_values=dict(updated_at=datetime.now(), active=True)
-            )
-            temper_value = int(re.search(r'\d+', data).group())
-            await device_service.update_device_temperature(device.id, temper_value)
-            await signals_log_service.create(signal_id=signal.id)
-        else:
-            elements = data.data.split(',')
-            for el in elements:
-                signal = await SignalsService.repository.get(row=el)
-                if not signal.active:
-                    await SignalsService.repository.update(
-                        filter_by_values=dict(
-                            id=signal.id,
-                            device_id=device.id
-                        ),
-                        new_values=dict(updated_at=datetime.now(), active=True)
-                    )
-                    await signals_log_service.create(signal_id=signal.id)
-                else:
-                    await SignalsService.repository.update(
-                        filter_by_values=dict(
-                            id=signal.id,
-                            device_id=device.id,
-                        ),
-                        new_values=dict(updated_at=datetime.now())
-                    )
 
 
 @dataclass
 class SignalsService:
     repository: SignalsRepo = signals_repo
-
-    async def parse_signal(self, **kwargs):
-        """
-        Парсит сигнал, приходящий с устройства
-        """
-        # TODO: Здесь необходимо описать парсер с последующим укладыванием в базу
-        await SignalsParser.parse_data(**kwargs)
 
     async def get_active_signals_by_device_id(self, id: int):
         """

@@ -1,23 +1,24 @@
-from typing import Any
-
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header, Body
 from fastapi_pagination import Page, Params
 from fastapi_pagination.bases import AbstractPage
 from fastapi_pagination.ext.async_sqlalchemy import paginate
 
 from services import signals_service
+from signals_parser import SignalsParser
 from . import get_session, AsyncSession, response_models as rm
 
 
 router = APIRouter()
 
 
-@router.post(path="/load")
-async def load(data: str):
+@router.post(path="/load", status_code=201)
+async def load(row: str, serial: str | None = Header(default=None)):
     """
     Эндпоинт для обработки данных с OPC-клиента
     """
-    signals_service.parse_signal(data)
+    # row = data["row"]
+    await SignalsParser.parse_data(row, serial)
+    return {"message": "Created"}
 
 
 @router.get(path="/{id}", response_model=rm.SignalResponseModel)
