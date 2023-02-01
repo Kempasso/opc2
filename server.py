@@ -5,7 +5,6 @@ from fastapi import FastAPI
 import settings
 from api import DeviceRouter, SignalRouter, CodesRouter, SignalLogsRouter
 from repositories import create_tables
-from data_generator import create_test_data
 
 from fastapi_pagination import add_pagination
 

@@ -3,6 +3,8 @@ from fastapi_pagination import Page, Params
 from fastapi_pagination.bases import AbstractPage
 from fastapi_pagination.ext.async_sqlalchemy import paginate
 
+from pydantic import BaseModel
+
 from services import signals_service
 from signals_parser import SignalsParser
 from . import get_session, AsyncSession, response_models as rm
@@ -11,13 +13,17 @@ from . import get_session, AsyncSession, response_models as rm
 router = APIRouter()
 
 
+class OPCDataSchema(BaseModel):
+    row: str
+    serial: str
+
+
 @router.post(path="/load", status_code=201)
-async def load(row: str, serial: str | None = Header(default=None)):
+async def load(data: OPCDataSchema):
     """
     Эндпоинт для обработки данных с OPC-клиента
     """
-    # row = data["row"]
-    await SignalsParser.parse_data(row, serial)
+    await SignalsParser.parse_data(data.row, data.serial)
     return {"message": "Created"}
 
 

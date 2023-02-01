@@ -6,11 +6,11 @@ from services import device_service, signals_service, signals_log_service
 
 class SignalsParser:
     @classmethod
-    async def parse_data(cls, data: str, serial: str):
+    async def parse_data(cls, row: str, serial: str):
 
         device = await device_service.repository.get(serial=serial)
 
-        if "temper" in data:
+        if "temper" in row:
             signal = await signals_service.repository.get(row="temper")
             await signals_service.update(
                 filter_by_values=dict(
@@ -22,11 +22,11 @@ class SignalsParser:
                     active=True
                 )
             )
-            temper_value = float(re.findall(r"[-+]?(?:\d*\.*\d+)", data)[0])
+            temper_value = float(re.findall(r"[-+]?(?:\d*\.*\d+)", row)[0])
             await device_service.update_device_temperature(device.id, temper_value)
             await signals_log_service.repository.create(signal_id=signal.id)
         else:
-            elements = data.split(',')
+            elements = row.split(',')
             elements.remove("")
             for el in elements:
                 if int(el) < 0:
