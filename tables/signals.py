@@ -5,10 +5,18 @@ from sqlalchemy import (
     Integer,
     Unicode,
     Boolean,
+    Enum as EnumCol,
 )
 from sqlalchemy.orm import relationship
+from enum import Enum
 
 from . import BaseModel
+
+
+class Levels(Enum):
+    info = "INFO"
+    warning = "WARNING"
+    error = "ERROR"
 
 
 class Signal(BaseModel):
@@ -19,8 +27,11 @@ class Signal(BaseModel):
     device_id = Column(Integer, ForeignKey("devices.id"), nullable=False)
     device = relationship("Device", foreign_keys=[device_id], lazy='subquery')
 
-    duration = Column(Integer)
+    duration = Column(Integer, default=60)
     active = Column(Boolean, default=False)
+    level = Column(EnumCol(Levels))
+    description = Column(Unicode(4096))
+    solution = Column(Unicode(4096))
 
     code_id = Column(Integer, ForeignKey("codes.id"))
     code = relationship("Code", foreign_keys=[code_id])
