@@ -59,6 +59,7 @@ class SignalsResponseModel(BaseModel):
 class SignalsLogResponseModel(BaseModel):
     id: int
     signal_id: int
+    duration: int
 
     created_at: datetime
     updated_at: datetime | None
