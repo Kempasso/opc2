@@ -9,12 +9,22 @@ from datetime import datetime
 from repositories import signals_repo, signals_log_repo
 
 
-async def refresh_rows():
-    signals = await signals_repo.do_filter(active=True)
-    for signal in signals:
-        if not signal.updated_at or signal.updated_at - datetime.now() >= signal.duration:
-            await signals_repo.update(
-                filter_by_values=dict(id=signal.id),
-                new_values=dict(active=False)
-            )
-            await signals_log_repo.create(signal_id=signal.id)
+class DataSeeker:
+    @classmethod
+    async def refresh_rows(cls):
+        signals = await signals_repo.do_filter(active=True)
+        for signal in signals:
+            if not signal.updated_at:
+                await signals_repo.update_signal(
+                    filter_by_values=dict(id=signal.id),
+                    new_values=dict(active=False)
+                )
+            else:
+                date_difference: int = round((signal.updated_at - datetime.now()).total_seconds())
+                date_difference *= -1 if date_difference < 0 else date_difference
+                if date_difference >= signal.duration:
+                    await signals_repo.update_signal(
+                        filter_by_values=dict(id=signal.id),
+                        new_values=dict(active=False)
+                    )
+                await signals_log_repo.create(signal_id=signal.id, duration=date_difference)
