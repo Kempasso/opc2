@@ -25,17 +25,6 @@ application.include_router(SignalLogsRouter, prefix="/api/signal_logs")
 
 add_pagination(application)
 
-HELP_MESSAGE = """
-Available commands:
-1. runserver
-2. create_test_data
-"""
-
 if __name__ == "__main__":
-    if "runserver" in sys.argv:
-        uvicorn.run(app=application, host=settings.HOST, port=settings.PORT)
-    elif "create_test_data" in sys.argv:
-        settings.EVENT_LOOP.run_until_complete(init_tables())
-        settings.EVENT_LOOP.run_until_complete(create_test_data())
-    else:
-        print(HELP_MESSAGE)
+    uvicorn.run(app=application, host=settings.HOST, port=settings.PORT)
+    settings.EVENT_LOOP.run_until_complete(init_tables())
