@@ -10,15 +10,26 @@ from services import signals_log_service
 router = APIRouter()
 
 
-@router.get(path="/log", response_model=Page[rm.SignalsLogResponseModel])
-async def get_all_log_entries(session: AsyncSession = Depends(get_session),
-                              params: Params = Depends()
-                              ) -> AbstractPage[rm.SignalsLogsResponseModel]:
+@router.get(path="", response_model=Page[rm.SignalsLogResponseModel])
+async def get_all_log_entries(
+        session: AsyncSession = Depends(get_session),
+        params: Params = Depends()
+) -> AbstractPage[rm.SignalsLogResponseModel]:
     """
-    Позволяет получить все записи логов сигнала
+    Позволяет получить все записи лога сигналов
     """
     logs_query = await signals_log_service.get_all_log_entries()
     return await paginate(conn=session, query=logs_query, params=params)
 
 
-# TODO: Описать эндпоинт, возвращающий записи логов для конкртного устройства
+@router.get(path="/log/device/{id}", response_model=Page[rm.SignalsLogResponseModel])
+async def get_log_entries_by_device_id(
+        id: int,
+        session: AsyncSession = Depends(get_session),
+        params: Params = Depends()
+) -> AbstractPage[rm.SignalsLogResponseModel]:
+    """
+    Позволяет получить записи лога сигналов по id устройства
+    """
+    logs_query = await signals_log_service.filter_log_entries_by_device_id(id)
+    return await paginate(conn=session, query=logs_query, params=params)

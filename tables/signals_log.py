@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, column_property
 
 from tables import BaseModel
 
@@ -10,6 +10,7 @@ class SignalsLog(BaseModel):
     id = Column(Integer, primary_key=True)
     signal_id = Column(Integer, ForeignKey("signals.id"))
     signal = relationship("Signal", foreign_keys=[signal_id], lazy='subquery')
+
     duration = Column(Integer)  # Длительность сигнала в секундах
 
     created_at = Column(DateTime, nullable=True)
