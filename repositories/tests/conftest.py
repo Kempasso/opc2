@@ -12,7 +12,7 @@ from repositories import (
     signals_log_repo,
     codes_repo,
 )
-from tables import Levels
+from tables import CodeLevels
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ async def code():
     code_number = random.randint(1, 100)
     data = dict(
         title=f"Код {code_number}",
-        level=random.choice([i for i in Levels]),
+        level=random.choice([i for i in CodeLevels]),
         description=f"Описание кода №{code_number}",
         solution=f"Решение кода №{code_number}",
         device_id=device_instance.id
