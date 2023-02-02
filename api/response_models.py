@@ -2,7 +2,7 @@ import typing
 from datetime import datetime
 
 from tables import Device
-from tables.codes import Levels
+from tables import SignalLevels, CodeLevels
 
 from pydantic import BaseModel
 
@@ -42,9 +42,10 @@ class SignalResponseModel(BaseModel):
 
     duration: int | None
     active: bool
-    level: Levels
+    level: SignalLevels
     description: str | None
     solution: str | None
+    row: str
 
     code_id: int | None
 
@@ -69,6 +70,8 @@ class SignalsLogResponseModel(BaseModel):
     signal_id: int
     duration: int | None
 
+    signal: SignalResponseModel
+
     created_at: datetime
     updated_at: datetime | None
 
@@ -88,7 +91,7 @@ class SignalsLogsResponseModel(BaseModel):
 class CodeResponseModel(BaseModel):
     id: int
     title: str
-    level: Levels
+    level: CodeLevels
     description: str
     solution: str
 
