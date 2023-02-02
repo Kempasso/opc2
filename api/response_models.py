@@ -10,15 +10,18 @@ from pydantic import BaseModel
 class DeviceResponseModel(BaseModel):
     id: int
     title: str
-    temperature: float | None
     serial: str
     description: str
-    responsible: str
-    model: str | None
-    vendor: str
+
+    temperature: float | None
+    wind: float | None
 
     created_at: datetime | None
     updated_at: datetime | None
+
+    responsible: str
+    model: str | None
+    vendor: str
 
     class Config:
         arbitrary_types_allowed = True
@@ -36,9 +39,14 @@ class DevicesResponseModel(BaseModel):
 class SignalResponseModel(BaseModel):
     id: int
     device_id: int | None
-    code_id: int | None
+
+    duration: int | None
     active: bool
+    level: Levels
     description: str | None
+    solution: str | None
+
+    code_id: int | None
 
     created_at: datetime | None
     updated_at: datetime | None
