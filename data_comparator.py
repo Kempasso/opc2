@@ -23,7 +23,8 @@ class Devices(Enum):
         description=None,
         amount=DeviceAmounts.platform.value,
         file="codes_platform.json",
-        responsible='Господин Филиал УСЗ ПАО "Газпром"'
+        responsible='Господин Филиал УСЗ ПАО "Газпром"',
+        vendor='Филиал УСЗ ПАО "Газпром"'
     )
     gate = dict(
         model='Система Технических Ворот',
@@ -32,7 +33,8 @@ class Devices(Enum):
         description='СТВ',
         amount=DeviceAmounts.gate.value,
         file="codes_gate.json",
-        responsible='Иван Иванов'
+        responsible='Иван Иванов',
+        vendor='Филиал УСЗ ПАО "Газпром"'
     )
     crane = dict(
         model='Кран СОФ',
@@ -40,7 +42,9 @@ class Devices(Enum):
         serial='crane',
         description=None,
         amount=DeviceAmounts.crane.value,
-        file="codes_crane.json"
+        file="codes_crane.json",
+        responsible='Иван Иванов',
+        vendor='Филиал УСЗ ПАО "Газпром"'
     )
 
 
@@ -76,7 +80,7 @@ class DataComparator:
                     model=device['model'],
                     responsible='Иван Иванов',
                     vendor='Филиал УСЗ Газпром'
-                )
+                    )
                 )
                 counter += 1
             return data
