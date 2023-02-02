@@ -2,7 +2,7 @@ import typing
 from datetime import datetime
 
 from tables import Device
-from tables.codes import Levels
+from tables import SignalLevels, CodeLevels
 
 from pydantic import BaseModel
 
@@ -10,15 +10,18 @@ from pydantic import BaseModel
 class DeviceResponseModel(BaseModel):
     id: int
     title: str
-    temperature: float | None
     serial: str
     description: str
-    responsible: str
-    model: str | None
-    vendor: str
+
+    temperature: float | None
+    wind: float | None
 
     created_at: datetime | None
     updated_at: datetime | None
+
+    responsible: str
+    model: str | None
+    vendor: str
 
     class Config:
         arbitrary_types_allowed = True
@@ -36,9 +39,15 @@ class DevicesResponseModel(BaseModel):
 class SignalResponseModel(BaseModel):
     id: int
     device_id: int | None
-    code_id: int | None
+
+    duration: int | None
     active: bool
+    level: SignalLevels
     description: str | None
+    solution: str | None
+    row: str
+
+    code_id: int | None
 
     created_at: datetime | None
     updated_at: datetime | None
@@ -61,6 +70,8 @@ class SignalsLogResponseModel(BaseModel):
     signal_id: int
     duration: int | None
 
+    signal: SignalResponseModel
+
     created_at: datetime
     updated_at: datetime | None
 
@@ -80,7 +91,7 @@ class SignalsLogsResponseModel(BaseModel):
 class CodeResponseModel(BaseModel):
     id: int
     title: str
-    level: Levels
+    level: CodeLevels
     description: str
     solution: str
 

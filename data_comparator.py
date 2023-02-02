@@ -73,9 +73,9 @@ class DataComparator:
                     title=device['title'] + str(counter + 1),
                     serial=device['serial'] + f"0{counter+1}" if counter + 1 < 10 else device['serial'] + f"{counter + 1}",
                     description=device['description'] if device['description'] else device['model'],
-                    model=device['model']
+                    model=device['model'],
                     responsible='Иван Иванов',
-                    vendor='Филиал УСЗ Газпром',
+                    vendor='Филиал УСЗ Газпром'
                 )
                 )
                 counter += 1

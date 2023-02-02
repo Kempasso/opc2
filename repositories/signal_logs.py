@@ -9,12 +9,13 @@ from tables import SignalsLog, Signal
 
 
 @dataclass
-class SignalsLogRepo(BaseRepo, CreateMixin, UpdateMixin, RetrieveMixin, FilterMixin):
+class SignalsLogRepo(BaseRepo, CreateMixin, UpdateMixin, FilterMixin):
     table = SignalsLog
 
     async def filter_signals_by_device_id(self, device_id: int):
-        async with self.session_maker() as session:
-            session: AsyncSession
-            query = select(self.table).join(Signal).filter(Signal.device_id == device_id)
-            result = await session.execute(query)
-            return result.scalars()
+        query = select(self.table).join(Signal).filter(Signal.device_id == device_id)
+        return query
+
+    async def all(self):
+        query = select(self.table).join(Signal)
+        return query

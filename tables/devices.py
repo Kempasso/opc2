@@ -14,13 +14,14 @@ class Device(BaseModel):
     description = Column(Unicode(4096))
 
     temperature = Column(Float)
+    wind = Column(Float)
 
     codes = relation("Code", remote_side=[id], uselist=True)
 
     created_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)
 
-    # FOR HARDCODE PARAMS
+    # FOR HARDCODED PARAMS
     model = Column(Unicode(255))
     vendor = Column(Unicode(255))
     responsible = Column(Unicode(255))
