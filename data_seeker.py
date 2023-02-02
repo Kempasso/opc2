@@ -3,14 +3,15 @@
 В момент запуска ходит в базу, получает сигналы с active == True, затем проверяет значение разности поля
 updated_at с datetime.now(). Если разность > поля duration - присваивает значение False для поля active.
 """
-import pytest
 from datetime import datetime
 
+import settings
 from repositories import signals_repo, signals_log_repo
 from services import device_service
 
 
 class DataSeeker:
+
     @classmethod
     async def refresh_rows(cls):
         signals = await signals_repo.do_filter(active=True)
@@ -36,3 +37,7 @@ class DataSeeker:
                         await device_service.update_device_temperature(device.id, None)
 
                 await signals_log_repo.create(signal_id=signal.id, duration=date_difference)
+
+
+if __name__ == '__main__':
+    settings.EVENT_LOOP.run_until_complete(DataSeeker.refresh_rows())

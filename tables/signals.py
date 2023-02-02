@@ -16,7 +16,7 @@ from . import BaseModel
 class Levels(Enum):
     info = "INFO"
     warning = "WARNING"
-    error = "ERROR"
+    error = "CRITICAL"
 
 
 class Signal(BaseModel):

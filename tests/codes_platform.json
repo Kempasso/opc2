@@ -7,7 +7,7 @@
         },
         {
             "code": "speed_wind",
-            "description": null,
+            "description": "Скорость ветра",
             "level": 20
         },
         {
