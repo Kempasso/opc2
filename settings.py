@@ -46,3 +46,7 @@ EVENT_LOOP_POLICY.set_event_loop(EVENT_LOOP)
 HOST = "127.0.0.1"
 PORT = 8080
 DB_URL = "postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/FastAPI"
+
+CORS_ORIGINS = [
+    "http://172.19.19.26:8069/"
+]
