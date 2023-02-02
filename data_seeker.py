@@ -7,6 +7,7 @@ import pytest
 from datetime import datetime
 
 from repositories import signals_repo, signals_log_repo
+from services import device_service
 
 
 class DataSeeker:
@@ -27,4 +28,11 @@ class DataSeeker:
                         filter_by_values=dict(id=signal.id),
                         new_values=dict(active=False)
                     )
+                    if signal.row == "speed_wind":
+                        device = await device_service.repository.get(serial=signal.row)
+                        await device_service.update_device_wind(device.id, None)
+                    elif signal.row == "temper":
+                        device = await device_service.repository.get(serial=signal.row)
+                        await device_service.update_device_temperature(device.id, None)
+
                 await signals_log_repo.create(signal_id=signal.id, duration=date_difference)

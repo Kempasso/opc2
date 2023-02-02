@@ -27,7 +27,7 @@ class DeviceService:
         device = await self.repository.get_by_id(id)
         return device
 
-    async def update_device_temperature(self, device_id: int, value: float):
+    async def update_device_temperature(self, device_id: int, value: float | None):
         """
         Позволяет обновить значение температуры устройства в базе
         :param device_id: id Устройства
@@ -36,4 +36,15 @@ class DeviceService:
         await self.repository.update(
             filter_by_values=dict(id=device_id),
             new_values=dict(temperature=value)
+        )
+
+    async def update_device_wind(self, device_id: int, value: float | None):
+        """
+        Позволяет обновить значение ветра устройства в базе
+        :param device_id: id Устройства
+        :param value: Значение ветра
+        """
+        await self.repository.update(
+            filter_by_values=dict(id=device_id),
+            new_values=dict(wind=value)
         )

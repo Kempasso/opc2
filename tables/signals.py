@@ -37,7 +37,6 @@ class Signal(BaseModel):
     code = relationship("Code", foreign_keys=[code_id])
 
     row = Column(Unicode(255), index=True)
-    description = Column(Unicode(4096))
 
     created_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)
