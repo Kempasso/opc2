@@ -24,5 +24,9 @@ class SignalsService:
         signal = await self.repository.filter_signal_by_code_id(code_id=id)
         return signal
 
+    async def get_signals_by_device_id(self, id: int):
+        signal = await self.repository.do_filter(device_id=id, as_query=True)
+        return signal
+
     async def get_all_signals(self):
         return await self.repository.all()

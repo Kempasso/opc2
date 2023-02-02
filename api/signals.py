@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Header, Body
+from fastapi import APIRouter, Depends
 from fastapi_pagination import Page, Params
 from fastapi_pagination.bases import AbstractPage
 from fastapi_pagination.ext.async_sqlalchemy import paginate
@@ -36,11 +36,22 @@ async def get_signal_by_code_id(id: int) -> rm.SignalResponseModel:
     return rm.SignalResponseModel(**vars(signal))
 
 
+@router.get(path="/device/{id}", response_model=Page[rm.SignalResponseModel])
+async def get_signals_by_device_id(id: int,
+                               session: AsyncSession = Depends(get_session),
+                               params: Params = Depends()) -> AbstractPage[rm.SignalsResponseModel]:
+    """
+    Позволяет получить все сигналы по id устройства
+    """
+    signals_query = await signals_service.get_signals_by_device_id(id=id)
+    return await paginate(conn=session, query=signals_query, params=params)
+
+
 @router.get(path="/device/{id}/active", response_model=Page[rm.SignalResponseModel])
-async def get_active_signals_by_device(id: int,
+async def get_active_signals_by_device_id(id: int,
                                        session: AsyncSession = Depends(get_session),
                                        params: Params = Depends()
-                                       ) -> AbstractPage[rm.SignalsLogsResponseModel]:
+                                       ) -> AbstractPage[rm.SignalsResponseModel]:
     """
     Позволяет получить активные сигналы устройства
     """
