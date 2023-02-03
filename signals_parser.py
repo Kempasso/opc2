@@ -41,7 +41,7 @@ class SignalsParser:
                 wind_level = SignalLevels.warning
             elif round(wind_value) > 30:
                 wind_level = SignalLevels.error
-            await signals_service.update(
+            await signals_service.repository.update(
                 filter_by_values=dict(
                     id=signal.id,
                     device_id=device.id,
