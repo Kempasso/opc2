@@ -19,7 +19,7 @@ class SignalsParser:
                 temper_level = SignalLevels.warning
             elif temper_value < 35 or temper_value > 35:
                 temper_level = SignalLevels.error
-            await signals_service.update(
+            await signals_service.repository.update(
                 filter_by_values=dict(
                     id=signal.id,
                     device_id=device.id
