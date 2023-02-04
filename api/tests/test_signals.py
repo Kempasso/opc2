@@ -23,7 +23,8 @@ async def test_get_all_signals(test_client):
 
 
 @pytest.mark.asyncio
-async def test_load(test_client):
+async def test_load(test_client, signal):
+    signal = await signal
     data = dict(
         row="17,-18,-19,20,21,-22,23,-24,-25,-26,-44,-46,-27,-28,-29,-30,",
         serial="STG_01"
