@@ -7,9 +7,10 @@ from fastapi.testclient import TestClient
 from repositories import (
     factories,
     signals_repo,
-    codes_repo
+    codes_repo,
+    devices_repo
 )
-from tables import Levels
+from tables import CodeLevels, SignalLevels
 from server import application
 
 
@@ -21,7 +22,28 @@ def test_client(event_loop):
 
 @pytest.fixture
 async def device():
-    new_instance = await factories.device_fabric.generate()
+    new_instance = await devices_repo.create(
+        title="Платформа №1",
+        serial="STG_01",
+        description="Description",
+        model="Платформа СОФ",
+        responsible='Иван Иванов',
+        vendor='Филиал УСЗ Газпром'
+    )
+    return new_instance
+
+
+@pytest.fixture
+async def signal(device):
+    device = await device
+    new_instance = await signals_repo.create(
+            device_id=device.id,
+            duration=random.randint(5, 15),
+            level=random.choice([i for i in SignalLevels]),
+            active=bool(random.randint(0, 1)),
+            row="17",
+            description="".join(random.choice(string.ascii_letters + string.digits) for i in range(10)),
+    )
     return new_instance
 
 
@@ -31,7 +53,7 @@ async def code():
     code_number = random.randint(1, 100)
     data = dict(
         title=f"Код {code_number}",
-        level=random.choice([i for i in Levels]),
+        level=random.choice([i for i in CodeLevels]),
         description=f"Описание кода №{code_number}",
         solution=f"Решение кода №{code_number}",
         device_id=device_instance.id
@@ -47,7 +69,7 @@ async def test_signal_structure():
     code_number = random.randint(1, 100)
     data = dict(
         title=f"Код {code_number}",
-        level=random.choice([i for i in Levels]),
+        level=random.choice([i for i in CodeLevels]),
         description=f"Описание кода №{code_number}",
         solution=f"Решение кода №{code_number}",
         device_id=device.id
@@ -56,6 +78,7 @@ async def test_signal_structure():
     data = dict(
         device_id=device.id,
         duration=random.randint(5, 15),
+        level=random.choice([i for i in SignalLevels]),
         active=bool(random.randint(0, 1)),
         code_id=code.id,
         row="".join(random.choice(string.ascii_letters + string.digits) for i in range(10)),
@@ -71,7 +94,7 @@ async def code_api():
     code_number = random.randint(1, 100)
     data = dict(
         title=f"Код {code_number}",
-        level=random.choice([i for i in Levels]),
+        level=random.choice([i for i in CodeLevels]),
         description=f"Описание кода №{code_number}",
         solution=f"Решение кода №{code_number}",
         device_id=device.id
@@ -81,6 +104,7 @@ async def code_api():
         device_id=device.id,
         duration=5,
         active=True,
+        level=random.choice([i for i in SignalLevels]),
         code_id=code.id,
         row="TEST",
         description="Description"

@@ -12,7 +12,7 @@ from repositories import (
     signals_log_repo,
     codes_repo,
 )
-from tables import CodeLevels
+from tables import CodeLevels, SignalLevels
 
 
 @pytest.fixture
@@ -43,6 +43,7 @@ async def signal():
         device=device,
         duration=5,
         row="-12,41,53",
+        level=random.choice([i for i in SignalLevels]),
         description="Без описания",
     )
     new_instance = await signals_repo.create(**data)
@@ -55,6 +56,7 @@ async def signal_log():
     data = dict(
         device=device,
         duration=5,
+        level=random.choice([i for i in SignalLevels]),
         row="-12,41,53",
         description="Без описания",
     )

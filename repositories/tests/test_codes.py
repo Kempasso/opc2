@@ -4,7 +4,7 @@ import pytest
 
 from repositories.factories import code_fabric
 from repositories import codes_repo, session_maker
-from tables import Levels
+from tables import CodeLevels
 
 
 @pytest.mark.asyncio
@@ -12,7 +12,7 @@ async def test_create_code(device):
     device = await device
     data = dict(
         title="".join(random.choice(string.ascii_letters + string.digits) for i in range(10)),
-        level=random.choice([i for i in Levels]),
+        level=random.choice([i for i in CodeLevels]),
         description="".join(random.choice(string.ascii_letters + string.digits) for i in range(10)),
         solution="".join(random.choice(string.ascii_letters + string.digits) for i in range(10)),
         device_id=device.id

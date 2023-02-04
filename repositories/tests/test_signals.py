@@ -6,6 +6,7 @@ from repositories import (
     signals_repo,
     session_maker
 )
+from tables import SignalLevels
 
 
 # SignalsRepo tests
@@ -17,6 +18,7 @@ async def test_create_signal(device, code):
         device_id=device.id,
         duration=random.randint(1, 15),
         active=bool(random.randint(0, 1)),
+        level=random.choice([i for i in SignalLevels]),
         code_id=code.id,
         row="".join(random.choice(string.ascii_letters + string.digits) for i in range(10)),
         description="desc"
