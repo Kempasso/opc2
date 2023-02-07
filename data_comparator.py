@@ -1,8 +1,26 @@
+import argparse
 import json
 
-from repositories import devices_repo, signals_repo
+from repositories import (
+    devices_repo,
+    signals_repo,
+    create_tables
+)
 from tables import SignalLevels
+from settings import EVENT_LOOP
 from enum import Enum
+
+
+DESCRIPTION = """
+Программа, реализующая механизм генерации экземпляров данных
+устройств и сигналов для них.
+"""
+
+argument_parser = argparse.ArgumentParser(
+    prog="data_comparator.py",
+    description=DESCRIPTION,
+    epilog="Коды для устройств находятся в папке codes")
+argument_parser.add_argument('run', help="Запускает генерацию устройств.", type=bool)
 
 
 class DeviceAmounts(Enum):
@@ -53,7 +71,7 @@ class DataComparator:
 
     @classmethod
     async def parse_codes_from_json(cls, file: str) -> list:
-        with open(file) as opened_file:
+        with open(f"codes/{file}") as opened_file:
             return json.load(opened_file)['data']
 
     @classmethod
@@ -94,3 +112,8 @@ class DataComparator:
                     device_id=device_instance.id,
                     file=device['file']
                 )
+
+
+if 'run' in vars(argument_parser.parse_args()):
+    EVENT_LOOP.run_until_complete(create_tables())
+    EVENT_LOOP.run_until_complete(DataComparator.create_base_devices())

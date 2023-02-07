@@ -2,3 +2,5 @@ __py*
 .git
 .idea
 venv*
+*/.pytest_cache/
+/.pytest_cache/

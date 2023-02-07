@@ -36,13 +36,6 @@ EVENT_LOOP_POLICY = asyncio.get_event_loop_policy()
 EVENT_LOOP = asyncio.new_event_loop()
 EVENT_LOOP_POLICY.set_event_loop(EVENT_LOOP)
 
-# PROJECTS_ROOT = pathlib.Path.cwd() / "static"
-# TEMPFILES_ROOT = pathlib.Path.cwd() / "temp"
-#
-# for root in [PROJECTS_ROOT, TEMPFILES_ROOT]:
-#     if not root.exists():
-#         root.mkdir()
-
 HOST = "127.0.0.1"
 PORT = 8080
 DB_URL = "postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/FastAPI"
