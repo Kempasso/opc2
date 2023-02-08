@@ -12,6 +12,7 @@ class Device(BaseModel):
     title = Column(Unicode(255), index=True)
     serial = Column(Unicode(255), index=True)
     description = Column(Unicode(4096))
+    position = Column(Unicode(255), nullable=True)
 
     temperature = Column(Float)
     wind = Column(Float)
@@ -22,6 +23,7 @@ class Device(BaseModel):
     updated_at = Column(DateTime, nullable=True)
 
     # FOR HARDCODED PARAMS
+    location = Column(Integer)
     model = Column(Unicode(255))
     vendor = Column(Unicode(255))
     responsible = Column(Unicode(255))

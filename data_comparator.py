@@ -10,7 +10,6 @@ from tables import SignalLevels
 from settings import EVENT_LOOP
 from enum import Enum
 
-
 DESCRIPTION = """
 Программа, реализующая механизм генерации экземпляров данных
 устройств и сигналов для них.
@@ -42,7 +41,20 @@ class Devices(Enum):
         amount=DeviceAmounts.platform.value,
         file="codes_platform.json",
         responsible='Господин Филиал УСЗ ПАО "Газпром"',
-        vendor='Филиал УСЗ ПАО "Газпром"'
+        vendor='Филиал УСЗ ПАО "Газпром"',
+        location=128,
+        position=[
+            '589 / 91',
+            '804 / 175',
+            '863 / 288',
+            '851 / 513',
+            '762 / 604',
+            '544 / 643',
+            '438 / 608',
+            '318 / 415',
+            '315 / 295',
+            '460 / 113'
+        ]
     )
     gate = dict(
         model='Система Технических Ворот',
@@ -52,7 +64,9 @@ class Devices(Enum):
         amount=DeviceAmounts.gate.value,
         file="codes_gate.json",
         responsible='Иван Иванов',
-        vendor='Филиал УСЗ ПАО "Газпром"'
+        vendor='Филиал УСЗ ПАО "Газпром"',
+        location=126,
+        position=''
     )
     crane = dict(
         model='Кран СОФ',
@@ -62,7 +76,9 @@ class Devices(Enum):
         amount=DeviceAmounts.crane.value,
         file="codes_crane.json",
         responsible='Иван Иванов',
-        vendor='Филиал УСЗ ПАО "Газпром"'
+        vendor='Филиал УСЗ ПАО "Газпром"',
+        location=126,
+        position=''
     )
 
 
@@ -93,12 +109,14 @@ class DataComparator:
             while counter < device['amount']:
                 data.append(dict(
                     title=device['title'] + str(counter + 1),
-                    serial=device['serial'] + f"0{counter+1}" if counter + 1 < 10 else device['serial'] + f"{counter + 1}",
+                    serial=device['serial'] + f"0{counter + 1}" if counter + 1 < 10 else device[
+                                                                                             'serial'] + f"{counter + 1}",
                     description=device['description'] if device['description'] else device['model'],
                     model=device['model'],
                     responsible='Иван Иванов',
-                    vendor='Филиал УСЗ Газпром'
-                    )
+                    vendor='Филиал УСЗ Газпром',
+                    position=device['position'] if device['serial'] != 'STG' else device['position'][counter]
+                )
                 )
                 counter += 1
             return data
